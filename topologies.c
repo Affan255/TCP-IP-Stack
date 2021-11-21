@@ -1,6 +1,9 @@
 #include "graph.h"
 #include "net.h"
 
+extern void
+network_start_pkt_receiver_thread(graph_t *topo);
+
 graph_t*
 build_first_topo() {
     graph_t *topo = create_new_graph("Generic Graph");
@@ -22,5 +25,30 @@ build_first_topo() {
     node_set_loopback_address(R2_re, "122.1.1.2");
     node_set_intf_ip_address(R2_re,"eth-0/3","30.1.1.2",24);
     node_set_intf_ip_address(R2_re,"eth-0/5","40.1.1.2",24);
+    
+    network_start_pkt_receiver_thread(topo);
+    return topo;
+}
+
+graph_t*
+build_linear_topo() {
+    graph_t *topo = create_new_graph("Linear Topo");
+    node_t *R1 = create_new_graph_node(topo,"R1");
+    node_t *R2 = create_new_graph_node(topo,"R2");
+    node_t *R3 = create_new_graph_node(topo,"R3");
+
+    insert_link_between_two_nodes(R1, R2, "eth0/1", "eth0/2", 1);
+    insert_link_between_two_nodes(R2, R3, "eth0/3", "eth0/4", 1);
+    
+    node_set_loopback_address(R1, "122.1.1.1");
+    node_set_loopback_address(R2, "122.1.1.2");
+    node_set_loopback_address(R3, "122.1.1.3");
+
+    node_set_intf_ip_address(R1, "eth0/1", "10.1.1.1", 24);
+    node_set_intf_ip_address(R2, "eth0/2", "10.1.1.2", 24);
+    node_set_intf_ip_address(R2, "eth0/3", "20.1.1.1", 24);
+    node_set_intf_ip_address(R3, "eth0/4", "20.1.1.2", 24);
+
+    network_start_pkt_receiver_thread(topo);
     return topo;
 }

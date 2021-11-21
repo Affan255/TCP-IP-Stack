@@ -17,6 +17,7 @@ create_new_graph_node(graph_t *graph, char *node_name) {
     node_t *node = (node_t*)calloc(1,sizeof(node_t));
     strncpy(node->node_name, node_name, NODE_NAME_SIZE);
     node->node_name[NODE_NAME_SIZE-1]='\0';
+    init_udp_socket(node);
     init_node_nw_prop(&node->node_nw_prop);
     init_glthread(&node->graph_glue);
     glthread_add_next(&graph->node_list,&node->graph_glue);
